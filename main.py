@@ -24,7 +24,9 @@ class Stack():
         if(s==""):
             return("Empty")
         return s
- 
+
+class Queue():
+    passlm;ml[]
 class Sketchpad(Canvas):
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
@@ -102,6 +104,7 @@ menubar = Menu(root)
 
 save_ = Menu(menubar,tearoff=0)
 menubar.add_cascade(label='Save', menu= save_)
+save_.add_command(label='Save', command=None)
 
 
 color = Menu(menubar,tearoff=0)
