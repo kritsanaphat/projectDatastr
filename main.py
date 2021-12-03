@@ -119,9 +119,19 @@ class Sketchpad(Canvas):
         # color_.add_command(background= self.tempqueue_color[4],command=self.tempfuc_color[4])
         # color_.add_command(background= self.tempqueue_color[5],command=self.tempfuc_color[5])
         # color_.add_command(background= self.tempqueue_color[6],command=self.tempfuc_color[6])
-        color_.add_command(label="other",command=self.other)
+        
         menubar.add_cascade(label='Color',menu = color_)
         root.config(menu = menubar)
+
+        other_ = Menu(color_, tearoff=0)
+        other_.add_command(background= self.tempqueue_color[3],command=self.tempfuc_color[3])
+        other_.add_command(background= self.tempqueue_color[4],command=self.tempfuc_color[4])
+        other_.add_command(background= self.tempqueue_color[5],command=self.tempfuc_color[5])
+        other_.add_command(background= self.tempqueue_color[6],command=self.tempfuc_color[6])
+        color_.add_cascade(
+        label="other",
+        menu=other_
+                                )
 
     def save_posn(self, event):
         self.lastx, self.lasty = event.x, event.y
