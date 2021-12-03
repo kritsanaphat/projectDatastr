@@ -1,53 +1,66 @@
-from tkinter import *
-from tkinter import messagebox
-
-class MenuBar(Menu):
-    def __init__(self, ws):
-        Menu.__init__(self, ws)
-
-        file = Menu(self, tearoff=False)
-        file.add_command(label="New")  
-        file.add_command(label="Open")  
-        file.add_command(label="Save")  
-        file.add_command(label="Save as")    
-        file.add_separator()
-        file.add_command(label="Exit", underline=1, command=self.quit)
-        self.add_cascade(label="File",underline=0, menu=file)
-        
-        edit = Menu(self, tearoff=0)  
-        edit.add_command(label="Undo")  
-        edit.add_separator()     
-        edit.add_command(label="Cut")  
-        edit.add_command(label="Copy")  
-        edit.add_command(label="Paste")  
-        self.add_cascade(label="Edit", menu=edit) 
-
-        view = Menu(self, tearoff=0)
-        ratio = Menu(self, tearoff=0)
-        for aspected_ratio in ('4:3', '16:9'):
-            ratio.add_command(label=aspected_ratio)
-        view.add_cascade(label='Ratio', menu=ratio)
-        self.add_cascade(label='View', menu=view)
-
-        help = Menu(self, tearoff=0)  
-        help.add_command(label="About", command=self.about)  
-        self.add_cascade(label="Help", menu=help)  
-
-    def exit(self):
-        self.exit
-
-    def about(self):
-            messagebox.showinfo('PythonGuides', 'Python Guides aims at providing best practical tutorials')
+from tkinter import Tk, Menu
 
 
-class MenuDemo(Tk):
-    def __init__(self):
-        Tk.__init__(self)
-        menubar = MenuBar(self)
-        self.config(menu=menubar)
+# root window
+root = Tk()
+root.geometry('320x150')
+root.title('Menu Demo')
 
-if __name__ == "__main__":
-    ws=MenuDemo()
-    ws.title('Python Guides')
-    ws.geometry('300x200')
-    ws.mainloop()
+
+# create a menubar
+menubar = Menu(root)
+root.config(menu=menubar)
+
+# create the file_menu
+file_menu = Menu(
+    menubar,
+    tearoff=0
+)
+
+# add menu items to the File menu
+file_menu.add_command(label='New')
+file_menu.add_command(label='Open...')
+file_menu.add_command(label='Close')
+file_menu.add_separator()
+
+# add a submenu
+sub_menu = Menu(file_menu, tearoff=0)
+sub_menu.add_command(label='Keyboard Shortcuts')
+sub_menu.add_command(label='Color Themes')
+
+# add the File menu to the menubar
+file_menu.add_cascade(
+    label="Preferences",
+    menu=sub_menu
+)
+
+# add Exit menu item
+file_menu.add_separator()
+file_menu.add_command(
+    label='Exit',
+    command=root.destroy
+)
+
+
+menubar.add_cascade(
+    label="File",
+    menu=file_menu,
+    underline=0
+)
+# create the Help menu
+help_menu = Menu(
+    menubar,
+    tearoff=0
+)
+
+help_menu.add_command(label='Welcome')
+help_menu.add_command(label='About...')
+
+# add the Help menu to the menubar
+menubar.add_cascade(
+    label="Help",
+    menu=help_menu,
+    underline=0
+)
+
+root.mainloop()
