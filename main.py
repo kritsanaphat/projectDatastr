@@ -94,10 +94,15 @@ class Sketchpad(Canvas):
         self.bind("<ButtonRelease-1>", self.save_progress) 
 
     def tool(self):
+        #main
         menubar = Menu(root, background='#ff8000', foreground='black', activebackground='white', activeforeground='black')
+        
+        #Menusave
         save_ = Menu(menubar,tearoff=0)
         menubar.add_cascade(label='Save', menu= save_)
         save_.add_command(label='Save', command="ff")
+
+        #Menucolor
         self.tempfuc_color = []
         while self.queuefuc_color.isEmpty() is False:
             self.tempfuc_color.append(self.queuefuc_color.deQueue())
@@ -109,17 +114,10 @@ class Sketchpad(Canvas):
             self.tempqueue_color.append(self.queue_color.deQueue())
         print(self.tempqueue_color[0])
         
-        
-
         color_ = Menu(menubar,tearoff=0)
         color_.add_command(background= self.tempqueue_color[0],command=self.tempfuc_color[0])
         color_.add_command(background= self.tempqueue_color[1],command=self.tempfuc_color[1])
         color_.add_command(background= self.tempqueue_color[2],command=self.tempfuc_color[2])
-        # color_.add_command(background= self.tempqueue_color[3],command=self.tempfuc_color[3])
-        # color_.add_command(background= self.tempqueue_color[4],command=self.tempfuc_color[4])
-        # color_.add_command(background= self.tempqueue_color[5],command=self.tempfuc_color[5])
-        # color_.add_command(background= self.tempqueue_color[6],command=self.tempfuc_color[6])
-        
         menubar.add_cascade(label='Color',menu = color_)
         root.config(menu = menubar)
 
@@ -133,8 +131,25 @@ class Sketchpad(Canvas):
         menu=other_
                                 )
 
+        #Menuthickness
+        thickness_ = Menu(menubar,tearoff=0)
+        menubar.add_cascade(label='Thick', menu= thickness_)
+        thickness_.add_command(label='3px', command = self.thickness3)
+        thickness_.add_command(label='5px', command = self.thickness5)
+        thickness_.add_command(label='7px', command = self.thickness7)
+        thickness_.add_command(label='default', command = self.thickness1)
+
     def save_posn(self, event):
         self.lastx, self.lasty = event.x, event.y
+
+    def thickness1(self):
+        self.thickness = 1
+    def thickness3(self):
+        self.thickness = 3
+    def thickness5(self):
+        self.thickness = 5
+    def thickness7(self):
+        self.thickness = 7
 
     def add_line(self, event):
         if len(self.buf) == 0:
