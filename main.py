@@ -846,4 +846,4 @@ root.rowconfigure(1, weight=1)
 sketch.bind()
 sketch.grid(column=0, row=1, sticky=(N, W, E, S))
 
-root.mainloop()
+root.mainloop()  ##f
