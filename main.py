@@ -364,11 +364,11 @@ class Sketchpad(Canvas):
                                 index -= 1
                             else:
                                 break
-                        while index < len(sortByTime) - 1:
-                            buf.append(sortByTime[index])
-                            if FileData.compareDate(sortByTime[index + 1], inp) == 2:
+                        while index < len(sortByTime):
+                            if FileData.compareDate(sortByTime[index], inp) == 2:
+                                buf.append(sortByTime[index])
                                 index += 1
-                            else:
+                            else :
                                 break
                         lb.delete(0,END)
                         for i in buf:
@@ -416,6 +416,28 @@ class Sketchpad(Canvas):
                 statebuf = False
                 statest = False
                 for i in progress:
+                    print(i,end="")
+                    if st == "Clear":
+                        self.temp.push("ClearE")
+                        while self.progress.size() != 0:
+                            popData = self.progress.pop()
+                            self.temp.push(popData)
+                            if popData != "Clear":
+                                thck = popData[1]
+                                for j in range(2,len(popData),4):
+                                    lx = popData[j]
+                                    ly = popData[j+1]
+                                    evx = popData[j+2]
+                                    evy = popData[j+3]
+                                    self.create_line((lx,ly,evx,evy),fill=self["background"],width=thck)
+                        while self.temp.size() != 0:
+                            popData = self.temp.pop()
+                            if popData == "ClearE":
+                                break
+                            self.progress.push(popData)
+                        self.progress.push("Clear")
+                        self.save = False
+                        st = ""
                     if i == " ":
                         continue
                     if i == "[":
@@ -441,8 +463,6 @@ class Sketchpad(Canvas):
                         else:
                             if statebuf == True:
                                 buf.append(st)
-                            else:
-                                self.clearEdit()
                             st = ""
                             statest = False 
                     elif i == ",":
