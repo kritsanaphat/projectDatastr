@@ -125,29 +125,38 @@ class Sketchpad(Canvas):
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
         self.root = parent
-        self.curColor = "black"
-        self.color = {0:"black",1:"red",2:"orange",3:"yellow",4:"green",5:"blue",6:"purple",7:"white",8:self['background']}
         self.winState = False
         self.savedir = ""
         self.name = ""
         self.save = True
         self.newState = False
 
+        #setup color
+        self.curColor = "black"
+        self.color = {0:"black",1:"red",2:"orange",3:"yellow",4:"green",5:"blue",6:"purple",7:"white",8:self['background']}
         self.recentColor = Queue()
         self.recentColor.enQueue("black")
         self.recentColor.enQueue("black")
         self.recentColor.enQueue("black")
 
+        #setup thickness
         self.thickness = 1
         self.thickBG = ['gray', self['background'], self['background'], self['background']]
+        
+        #setup undo redo
         self.buf = []
         self.tool()
         self.progress = Stack()
         self.temp = Stack()
-        self.bind("<Button-1>", self.save_posn) 
-        self.bind("<B1-Motion>", self.add_line) 
-        self.bind("<ButtonRelease-1>", self.save_progress)
 
+        #for line
+        self.isText = False
+        if self.isText == False:
+            self.bind("<Button-1>", self.save_posn) 
+            self.bind("<B1-Motion>", None) 
+            self.bind("<ButtonRelease-1>", self.add_line_square)
+
+        #setuo directory
         try:
             f = open("C:\MyPaint\Configs\Config.txt",'r')
             self.savedir = f.readline()
@@ -165,7 +174,7 @@ class Sketchpad(Canvas):
 
     def tool(self):
         #main
-        menubar = Menu(root, background='#ff8000', foreground='black', activebackground='white', activeforeground='black')
+        menubar = Menu(root, background='#ff8000', foreground='black', activebackground='white', activeforeground='black') 
         
         #Menusave
         file_ = Menu(menubar,tearoff=0)
@@ -190,6 +199,7 @@ class Sketchpad(Canvas):
         recent_ = Menu(color_, tearoff=0)
         color_.add_cascade(label="Recent",menu=recent_)
         
+
         Rcolor0 = self.recentColor.deQueue()
         Rcolor1 = self.recentColor.deQueue()
         Rcolor2 = self.recentColor.deQueue()
@@ -222,6 +232,11 @@ class Sketchpad(Canvas):
         size_.add_command(label='3px', background=self.thickBG[1], command = self.thickness3)
         size_.add_command(label='5px', background=self.thickBG[2], command = self.thickness5)
         size_.add_command(label='7px', background=self.thickBG[3], command = self.thickness7)
+        
+        #Text
+        text_ = Menu(menubar,tearoff=0)
+        menubar.add_cascade(label='Text',menu=text_)
+        text_.add_cascade(label='Text',command = None)
 
         #Filename
         if self.name == "":
@@ -231,6 +246,7 @@ class Sketchpad(Canvas):
         
         
     def save_posn(self, event):
+        #save start point line(x,y)
         self.lastx, self.lasty = event.x, event.y
         if self.winState == True:
             try:
@@ -251,12 +267,22 @@ class Sketchpad(Canvas):
             self.buf.append(event.y)
             self.save_posn(event)
             self.save = False
-        
+    
+    def add_line_square(self, event):
+        self.create_line((self.lastx, event.y, event.x, event.y), fill='black',width=self.thickness, dash=(5, 1))
+        self.create_line((event.x, self.lasty, event.x, event.y), fill='black',width=self.thickness, dash=(5, 1))
+        self.create_line((self.lastx, self.lasty, self.lastx, event.y), fill='black',width=self.thickness, dash=(5, 1))
+        self.create_line((self.lastx, self.lasty, event.x, self.lasty), fill='black',width=self.thickness, dash=(5, 1))
+            
+  
+  
 
     def save_progress(self, event):
         if len(self.buf) != 0:
+            print("before",self.buf)
             self.progress.push(self.buf.copy())
             self.buf.clear()
+            print("after",self.buf)
         if self.winState == True:
             try:
                 self.win.attributes()
@@ -477,9 +503,28 @@ class Sketchpad(Canvas):
 
         if self.winState == False:
             allFile = os.listdir(self.savedir)
-            for i in allFile:
-                if i[len(i)-4:len(i)] != ".txt":
-                   allFile.remove(i)
+            Max = len(allFile)
+            i = 0
+            while i < Max:
+                for j in range(-1,-5,-1):
+                    if j == -1 and allFile[i][j] != 't':
+                        allFile.remove(allFile[i])
+                        Max -= 1
+                        break
+                    elif j == -2 and allFile[i][j] != 'x':
+                        allFile.remove(allFile[i])
+                        Max -= 1
+                        break
+                    elif j == -3 and allFile[i][j] != 't':
+                        allFile.remove(allFile[i])
+                        Max -= 1
+                        break
+                    elif j == -4 and allFile[i][j] != '.':
+                        allFile.remove(allFile[i])
+                        Max -= 1
+                        break
+                    elif j == -4:
+                        i += 1
             QuickSort(allFile, 0, len(allFile)-1)
             sortByName = []
             for i in allFile:
@@ -590,7 +635,7 @@ class Sketchpad(Canvas):
     def chd(self):
         def receiveInput():
             self.savedir = text.get("1.0","end-1c")
-            f = open("C:\Program Files\MyPaint\Configs\Config.txt",'w+')
+            f = open("C:\MyPaint\Configs\Config.txt",'w+')
             f.write(self.savedir)
             self.win.destroy()
             self.winState = False
@@ -833,8 +878,7 @@ class Sketchpad(Canvas):
         self.thickBG = [self['background'], self['background'], self['background'], 'gray']
         self.tool()
 
-    def other(self):
-        pass    
+
 
 
 root = Tk()
@@ -845,5 +889,4 @@ root.columnconfigure(0, weight=1)
 root.rowconfigure(1, weight=1)
 sketch.bind()
 sketch.grid(column=0, row=1, sticky=(N, W, E, S))
-
-root.mainloop()  ##f
+root.mainloop()

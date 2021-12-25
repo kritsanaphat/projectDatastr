@@ -1,26 +1,34 @@
-# importing all files  from tkinter
-from tkinter import * 
-from tkinter import ttk
-  
-# import only asksaveasfile from filedialog
-# which is used to save file in any extension
-from tkinter.filedialog import asksaveasfile
-  
+from tkinter import *
+import tkinter as tk  
+ 
 root = Tk()
-root.geometry('200x150')
-  
-# function to call when user press
-# the save button, a filedialog will
-# open and ask to save file
-def save():
-    files = [('All Files', '*.*'), 
-             ('Python Files', '*.py'),
-             ('Text Document', '*.txt')
-             ]
-    file = asksaveasfile(filetypes = files, defaultextension = files)
-  
-btn = ttk.Button(root, text = 'Save', command = lambda : save())
-btn.pack(side = TOP, pady = 20)
-  
-mainloop()
-mainloop()
+ 
+# specify size of window.
+root.geometry("250x170")
+ 
+# Create text widget and specify size.
+T = Text(root, height = 5, width = 52)
+ 
+# Create label
+l = Label(root, text = "Fact of the Day")
+l.config(font =("Courier", 14))
+ 
+Fact = """A man can be arrested in
+Italy for wearing a skirt in public."""
+ 
+# Create button for next text.
+b1 = Button(root, text = "Next", )
+ 
+# Create an Exit button.
+b2 = Button(root, text = "Exit",
+            command = root.destroy)
+ 
+l.pack()
+T.pack()
+b1.pack()
+b2.pack()
+ 
+# Insert The Fact.
+T.insert(tk.END, Fact)
+ 
+tk.mainloop()
