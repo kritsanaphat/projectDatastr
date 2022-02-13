@@ -153,8 +153,8 @@ class Sketchpad(Canvas):
         self.isText = False
         if self.isText == False:
             self.bind("<Button-1>", self.save_posn) 
-            self.bind("<B1-Motion>", None) 
-            self.bind("<ButtonRelease-1>", self.add_line_square)
+            self.bind("<B1-Motion>", self.add_line) 
+            self.bind("<ButtonRelease-1>", self.save_progress)
 
         #setuo directory
         try:
@@ -255,7 +255,7 @@ class Sketchpad(Canvas):
                 self.winState = False
 
     def add_line(self, event):
-        if self.winState == False:
+         if self.winState == False:
             if len(self.buf) == 0:
                 self.temp.clear()
                 self.buf.append(self.curColor)
@@ -273,8 +273,8 @@ class Sketchpad(Canvas):
         self.create_line((event.x, self.lasty, event.x, event.y), fill='black',width=self.thickness, dash=(5, 1))
         self.create_line((self.lastx, self.lasty, self.lastx, event.y), fill='black',width=self.thickness, dash=(5, 1))
         self.create_line((self.lastx, self.lasty, event.x, self.lasty), fill='black',width=self.thickness, dash=(5, 1))
-            
-  
+        widthText = abs(self.lastx-event.x  )
+        heightText = abs(self.lasty-event.y)
   
 
     def save_progress(self, event):
